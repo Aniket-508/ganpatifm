@@ -1,0 +1,39 @@
+---
+import '../styles/globals.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Ganpati Bappa Morya! Devotional Ganesh songs playing 24/7.' } = Astro.props;
+---
+
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/opengraph.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="675" />
+    <meta property="og:image:alt" content={`${title} — Devotional bangers, 24/7.`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="/opengraph.svg" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/mukta-400.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/mukta-500.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/mukta-700.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/yatra-one-400.woff2" crossorigin />
+    <link rel="preload" as="image" href="/bg.png" fetchpriority="high" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

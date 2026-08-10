@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Mukta';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/mukta-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Mukta';
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url('/fonts/mukta-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Mukta';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('/fonts/mukta-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Yatra One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/yatra-one-400.woff2') format('woff2');
+}
+
+@theme {
+  --font-sans: 'Mukta', sans-serif;
+  --font-display: 'Yatra One', cursive;
+
+  --color-saffron: #FF6B00;
+  --color-cream: #FFF8EE;
+  --color-dark: #1a0a00;
+  --color-gold: #FFD700;
+  --color-maroon: #8B0000;
+  --color-maroon-light: #c0392b;
+  --color-green: #3ddc84;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-cream);
+  background: url('/bg.png') center/cover no-repeat var(--color-dark);
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,.3), transparent 30%, transparent 60%, rgba(0,0,0,.5));
+}
+
+/* Animations */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px #3ddc84; }
+  50% { opacity: .5; box-shadow: 0 0 16px #3ddc84, 0 0 24px #3ddc84; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin,
+  .animate-pulse-green,
+  .animate-blink {
+    animation: none !important;
+  }
+}

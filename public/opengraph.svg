@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a0a00"/>
+      <stop offset="100%" stop-color="#8B0000"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <text x="600" y="280" font-family="serif" font-size="120" fill="#FFD700" text-anchor="middle" font-weight="bold">गणपती</text>
+  <text x="600" y="420" font-family="serif" font-size="120" fill="#FF6B00" text-anchor="middle" font-weight="bold">बप्पा मोरया</text>
+  <text x="600" y="530" font-family="sans-serif" font-size="36" fill="#FFF8EE" text-anchor="middle" opacity="0.7">Devotional bangers, 24/7.</text>
+  <circle cx="600" cy="600" r="8" fill="#FFD700" opacity="0.3"/>
+</svg>

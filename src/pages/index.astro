@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Clock from '../components/Clock';
+import OnlineIndicator from '../components/OnlineIndicator';
+import MusicPlayer from '../components/MusicPlayer';
+---
+
+<Layout title="Ganpati Bappa Morya">
+  <header class="absolute top-0 left-0 right-0 flex justify-between items-center px-5 py-4 z-[5]">
+    <Clock client:load />
+    <OnlineIndicator client:load />
+    <nav class="flex gap-5">
+      <a href="https://open.spotify.com/playlist/37i9dQZF1DWWewwIBnx9QZ" target="_blank" rel="noopener"
+        class="inline-flex items-center gap-1.5 text-[var(--color-cream)] no-underline font-medium text-[15px] border-b border-dashed border-[rgba(255,248,238,.4)] pb-px hover:text-[var(--color-gold)] transition-colors">
+        Spotify <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+      </a>
+      <a href="https://music.youtube.com/playlist?list=PLLRLHKjoLYU2XDGUcXUyOUBbi9qywxMgk" target="_blank" rel="noopener"
+        class="inline-flex items-center gap-1.5 text-[var(--color-cream)] no-underline font-medium text-[15px] border-b border-dashed border-[rgba(255,248,238,.4)] pb-px hover:text-[var(--color-gold)] transition-colors">
+        YT Music <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+      </a>
+    </nav>
+  </header>
+
+  <div class="absolute top-[14%] left-0 right-0 text-center z-[4] px-4">
+    <h1 class="text-[clamp(48px,10vw,140px)] leading-[1.05] text-[var(--color-cream)]"
+        style="font-family:'Yatra One', cursive; text-shadow: 4px 4px 0 var(--color-saffron), 8px 8px 0 rgba(0,0,0,.4)">
+      गणपती<br/>बप्पा मोरया
+    </h1>
+  </div>
+
+  <MusicPlayer client:load />
+</Layout>
