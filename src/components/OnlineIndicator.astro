@@ -1,0 +1,162 @@
+---
+const VISITOR_KEY = 'ganpatifm_visitor';
+const ACTIVE_KEY = 'ganpatifm_active';
+const TTL = 5 * 60 * 1000;
+---
+
+<div id="online-root" class="relative">
+  <button id="online-btn" class="flex items-center gap-2 text-[15px] opacity-90 drop-shadow-[0_1px_6px_rgba(0,0,0,.5)] cursor-default bg-transparent border-none text-[var(--color-cream)]">
+    <span class="relative flex h-[9px] w-[9px]">
+      <span class="absolute inline-flex h-full w-full rounded-full bg-[var(--color-green)] opacity-75" style="animation:pulse-green 2s ease-in-out infinite"></span>
+      <span class="relative inline-flex h-[9px] w-[9px] rounded-full bg-[var(--color-green)]" style="box-shadow:0 0 8px #3ddc84"></span>
+    </span>
+    <span id="online-count" class="tabular-nums">0</span>
+    <span class="opacity-70">online</span>
+  </button>
+
+  <div id="online-popover" class="absolute top-full left-0 mt-2 bg-[rgba(20,10,5,.92)] backdrop-blur-xl border border-white/10 rounded-xl p-3.5 min-w-[200px] shadow-[0_12px_40px_rgba(0,0,0,.6)] transition-all duration-200 z-30 opacity-0 -translate-y-1 pointer-events-none">
+    <div class="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-2">Viewers by country</div>
+    <div id="online-countries"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const VISITOR_KEY = 'ganpatifm_visitor';
+  const ACTIVE_KEY = 'ganpatifm_active';
+  const TTL = 5 * 60 * 1000;
+
+  function getCountry() {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      const map = {
+        'Asia/Kolkata': { name: 'India', flag: '\u{1F1EE}\u{1F1F3}' },
+        'Asia/Calcutta': { name: 'India', flag: '\u{1F1EE}\u{1F1F3}' },
+        'America/New_York': { name: 'USA', flag: '\u{1F1FA}\u{1F1F8}' },
+        'America/Chicago': { name: 'USA', flag: '\u{1F1FA}\u{1F1F8}' },
+        'America/Los_Angeles': { name: 'USA', flag: '\u{1F1FA}\u{1F1F8}' },
+        'America/Denver': { name: 'USA', flag: '\u{1F1FA}\u{1F1F8}' },
+        'America/Toronto': { name: 'Canada', flag: '\u{1F1E8}\u{1F1E6}' },
+        'America/Vancouver': { name: 'Canada', flag: '\u{1F1E8}\u{1F1E6}' },
+        'Europe/London': { name: 'UK', flag: '\u{1F1EC}\u{1F1E7}' },
+        'Europe/Berlin': { name: 'Germany', flag: '\u{1F1E9}\u{1F1EA}' },
+        'Europe/Paris': { name: 'France', flag: '\u{1F1EB}\u{1F1F7}' },
+        'Asia/Dubai': { name: 'UAE', flag: '\u{1F1E6}\u{1F1EA}' },
+        'Asia/Singapore': { name: 'Singapore', flag: '\u{1F1F8}\u{1F1EC}' },
+        'Asia/Kathmandu': { name: 'Nepal', flag: '\u{1F1F3}\u{1F1F5}' },
+        'Asia/Tokyo': { name: 'Japan', flag: '\u{1F1EF}\u{1F1F5}' },
+        'Asia/Shanghai': { name: 'China', flag: '\u{1F1E8}\u{1F1F3}' },
+        'Asia/Seoul': { name: 'Korea', flag: '\u{1F1F0}\u{1F1F7}' },
+        'Australia/Sydney': { name: 'Australia', flag: '\u{1F1E6}\u{1F1FA}' },
+        'Australia/Melbourne': { name: 'Australia', flag: '\u{1F1E6}\u{1F1FA}' },
+      };
+      if (map[tz]) return map[tz];
+      const continent = tz.split('/')[0];
+      if (continent === 'America') return { name: 'Americas', flag: '\u{1F1F2}\u{1F1FD}' };
+      if (continent === 'Europe') return { name: 'Europe', flag: '\u{1F1EA}\u{1F1FA}' };
+      if (continent === 'Asia') return { name: 'Asia', flag: '\u{1F1EF}\u{1F1F0}' };
+      return { name: 'Other', flag: '\u{1F310}' };
+    } catch { return { name: 'Other', flag: '\u{1F310}' }; }
+  }
+
+  function prune(data) {
+    const now = Date.now();
+    for (const [id, ts] of Object.entries(data)) {
+      if (now - ts > TTL) delete data[id];
+    }
+    return data;
+  }
+
+  function getActive() {
+    try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}'); } catch { return {}; }
+  }
+
+  function setActive(data) { localStorage.setItem(ACTIVE_KEY, JSON.stringify(data)); }
+
+  let myId = sessionStorage.getItem(VISITOR_KEY);
+  if (!myId) { myId = crypto.randomUUID(); sessionStorage.setItem(VISITOR_KEY, myId); }
+
+  const root = document.getElementById('online-root');
+  const btn = document.getElementById('online-btn');
+  const countEl = document.getElementById('online-count');
+  const countriesEl = document.getElementById('online-countries');
+  const popover = document.getElementById('online-popover');
+  let popoverOpen = false;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    popoverOpen = !popoverOpen;
+    if (popoverOpen) {
+      popover.classList.remove('opacity-0', '-translate-y-1', 'pointer-events-none');
+      popover.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+    } else {
+      popover.classList.add('opacity-0', '-translate-y-1', 'pointer-events-none');
+      popover.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+    }
+  });
+
+  document.addEventListener('click', () => {
+    if (popoverOpen) {
+      popoverOpen = false;
+      popover.classList.add('opacity-0', '-translate-y-1', 'pointer-events-none');
+      popover.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+    }
+  });
+
+  function heartbeat() {
+    let data = getActive();
+    data = prune(data);
+    data[myId] = Date.now();
+    setActive(data);
+    const pruned = prune({ ...data });
+    const c = Object.keys(pruned).length;
+
+    if (c <= 1) {
+      root.style.display = 'none';
+      return;
+    }
+    root.style.display = '';
+
+    countEl.textContent = c;
+
+    const countryMap = {};
+    for (const id of Object.keys(pruned)) {
+      const country = getCountry();
+      if (!countryMap[country.name]) countryMap[country.name] = { ...country, count: 0 };
+      countryMap[country.name].count++;
+    }
+    const sorted = Object.values(countryMap).sort((a, b) => b.count - a.count);
+    countriesEl.innerHTML = sorted.map(c =>
+      `<div class="flex items-center gap-2 py-0.5 text-[13px]">
+        <span class="text-[15px]">${c.flag}</span>
+        <span class="flex-1 text-white/85">${c.name}</span>
+        <span class="tabular-nums text-white/45">${c.count}</span>
+      </div>`
+    ).join('');
+  }
+
+  heartbeat();
+  setInterval(heartbeat, 5000);
+
+  window.addEventListener('storage', (e) => { if (e.key === ACTIVE_KEY) heartbeat(); });
+
+  try {
+    const bc = new BroadcastChannel('ganpatifm_online');
+    bc.onmessage = () => heartbeat();
+    setInterval(() => bc.postMessage('ping'), 5000);
+    window.addEventListener('beforeunload', () => {
+      const data = getActive();
+      delete data[myId];
+      setActive(data);
+      bc.postMessage('bye');
+      bc.close();
+    });
+  } catch {}
+
+  window.addEventListener('beforeunload', () => {
+    const data = getActive();
+    delete data[myId];
+    setActive(data);
+  });
+})();
+</script>

@@ -1,14 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Clock from '../components/Clock';
-import OnlineIndicator from '../components/OnlineIndicator';
+import Clock from '../components/Clock.astro';
+import OnlineIndicator from '../components/OnlineIndicator.astro';
 import MusicPlayer from '../components/MusicPlayer';
 ---
 
 <Layout title="Ganpati Bappa Morya">
   <header class="absolute top-0 left-0 right-0 flex justify-between items-center px-5 py-4 z-[5]">
-    <Clock client:load />
-    <OnlineIndicator client:load />
+    <Clock />
+    <OnlineIndicator />
     <nav class="flex gap-5">
       <a href="https://open.spotify.com/playlist/37i9dQZF1DWWewwIBnx9QZ" target="_blank" rel="noopener"
         class="inline-flex items-center gap-1.5 text-[var(--color-cream)] no-underline font-medium text-[15px] border-b border-dashed border-[rgba(255,248,238,.4)] pb-px hover:text-[var(--color-gold)] transition-colors">
