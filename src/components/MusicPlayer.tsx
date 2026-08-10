@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, SkipBack, SkipForward, ExternalLink } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
 
 const SONGS = [
   { id: "5o1YLpAmmjw", title: "Sukhkarta Dukhharta", artist: "Lata Mangeshkar" },
@@ -154,9 +154,11 @@ export default function MusicPlayer() {
 
   return (
     <>
-    <div className={`absolute left-1/2 bottom-[6%] -translate-x-1/2 w-[min(560px,92vw)] z-[6] rounded-2xl border-[6px] border-[var(--color-saffron)] shadow-[0_18px_40px_rgba(0,0,0,.6),inset_0_0_0_3px_rgba(255,248,238,.15)] p-5 ${isPlaying ? 'playing' : ''}`}
-        style={{ background: 'linear-gradient(135deg, #c0392b, #8B0000)' }}>
-
+    <div
+      className={`absolute left-1/2 bottom-[6%] -translate-x-1/2 w-[min(560px,92vw)] z-[6] rounded-2xl border-[6px] border-[var(--color-saffron)] shadow-[0_18px_40px_rgba(0,0,0,.6),inset_0_0_0_3px_rgba(255,248,238,.15)] p-5 ${isPlaying ? 'playing' : ''}`}
+      style={{ background: 'linear-gradient(135deg, #c0392b, #8B0000)' }}
+    >
+      {/* Top row: cover + info (always horizontal) */}
       <div className="flex items-center gap-3.5">
         <div className="relative w-16 h-16 shrink-0">
           <div
@@ -174,7 +176,8 @@ export default function MusicPlayer() {
           <div className="text-[13px] opacity-85 mt-0.5">{song.artist}</div>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        {/* Desktop: controls inline */}
+        <div className="hidden md:flex items-center gap-2.5">
           <button onClick={() => goTo(currentIndex - 1)} aria-label="Previous song"
             className="inline-flex items-center justify-center w-[42px] h-[42px] rounded-full cursor-pointer border-none text-[#1a1a1a] shadow-[0_3px_0_rgba(0,0,0,.4)] active:translate-y-[2px] active:shadow-[0_1px_0_rgba(0,0,0,.4)] focus-visible:outline-3 focus-visible:outline-[var(--color-gold)] focus-visible:outline-offset-2"
             style={{ background: 'var(--color-cream)' }}>
@@ -197,6 +200,7 @@ export default function MusicPlayer() {
         </div>
       </div>
 
+      {/* Progress bar */}
       <div className="mt-3 flex items-center gap-2.5 text-[13px]">
         <span className="tabular-nums">{currentTime}</span>
         <div className="flex-1 h-2 rounded-md bg-black/40 cursor-pointer relative" onClick={handleSeek}>
@@ -207,6 +211,29 @@ export default function MusicPlayer() {
           }} />
         </div>
         <span className="tabular-nums">{duration}</span>
+      </div>
+
+      {/* Mobile: controls below progress bar */}
+      <div className="flex md:hidden items-center justify-center gap-2.5 mt-3">
+        <button onClick={() => goTo(currentIndex - 1)} aria-label="Previous song"
+          className="inline-flex items-center justify-center w-[42px] h-[42px] rounded-full cursor-pointer border-none text-[#1a1a1a] shadow-[0_3px_0_rgba(0,0,0,.4)] active:translate-y-[2px] active:shadow-[0_1px_0_rgba(0,0,0,.4)] focus-visible:outline-3 focus-visible:outline-[var(--color-gold)] focus-visible:outline-offset-2"
+          style={{ background: 'var(--color-cream)' }}>
+          <SkipBack className="w-4 h-4" strokeWidth={2.5} />
+        </button>
+        <button onClick={handlePlay} aria-label="Play or pause"
+          className="inline-flex items-center justify-center w-[54px] h-[54px] rounded-full cursor-pointer border-none text-[#1a1a1a] shadow-[0_3px_0_rgba(0,0,0,.4)] active:translate-y-[2px] active:shadow-[0_1px_0_rgba(0,0,0,.4)] focus-visible:outline-3 focus-visible:outline-[var(--color-gold)] focus-visible:outline-offset-2"
+          style={{ background: 'var(--color-saffron)' }}>
+          {isPlaying ? (
+            <Pause className="w-5 h-5" strokeWidth={2.5} />
+          ) : (
+            <Play className="w-5 h-5" strokeWidth={2.5} />
+          )}
+        </button>
+        <button onClick={() => goTo(currentIndex + 1)} aria-label="Next song"
+          className="inline-flex items-center justify-center w-[42px] h-[42px] rounded-full cursor-pointer border-none text-[#1a1a1a] shadow-[0_3px_0_rgba(0,0,0,.4)] active:translate-y-[2px] active:shadow-[0_1px_0_rgba(0,0,0,.4)] focus-visible:outline-3 focus-visible:outline-[var(--color-gold)] focus-visible:outline-offset-2"
+          style={{ background: 'var(--color-cream)' }}>
+          <SkipForward className="w-4 h-4" strokeWidth={2.5} />
+        </button>
       </div>
     </div>
 
